@@ -7,8 +7,11 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Koneksi direct (non-pooler) untuk migrasi / `prisma db push`.
+  // WAJIB diset (env DIRECT_URL) di lingkungan yang menjalankan db push (Vercel).
+  directUrl = env("DIRECT_URL")
 }
 
 model Company {
