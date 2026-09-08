@@ -1,0 +1,140 @@
+// AsiaCommerce Identity Provider (SSO) — Prisma schema (PostgreSQL / Neon)
+// Sumber tunggal identitas, profil, dan role per-aplikasi.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  logo      String?
+  address   String?
+  phone     String?
+  email     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+
+  @@map("companies")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  image        String?
+  phone        String?
+  password     String
+  isActive     Boolean  @default(true)
+  isSuperAdmin Boolean  @default(false) // admin platform (kelola semua di SSO)
+  companyId    String
+  reportsToId  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company   Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  reportsTo User?         @relation("Reporting", fields: [reportsToId], references: [id])
+  reports   User[]        @relation("Reporting")
+  profile   UserProfile?
+  appRoles  UserAppRole[]
+
+  @@index([companyId])
+  @@map("users")
+}
+
+model UserProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Personal
+  nickname        String?
+  birthPlace      String?
+  birthDate       DateTime?
+  gender          Gender?
+  maritalStatus   MaritalStatus?
+  nik             String?
+  kkNumber        String?
+  npwp            String?
+  passportNumber  String?
+  addressKtp      String?
+  addressDomicile String?
+  personalEmail   String?
+  emergencyName     String?
+  emergencyRelation String?
+  emergencyPhone    String?
+
+  // Kepegawaian
+  employeeId       String?
+  jobTitle         String?
+  department       String?
+  level            String?
+  workLocation     String?
+  joinDate         DateTime?
+  endDate          DateTime?
+  employmentStatus EmploymentStatus?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum EmploymentStatus {
+  PERMANENT
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+}
+
+// Aplikasi yang terhubung ke SSO (ASET, HRIS, ...)
+model Application {
+  id        String   @id @default(cuid())
+  key       String   @unique // "ASET", "HRIS"
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  roles UserAppRole[]
+
+  @@map("applications")
+}
+
+// Akses & role user PER aplikasi
+model UserAppRole {
+  id             String   @id @default(cuid())
+  userId         String
+  applicationKey String
+  role           String // mis. ASET: SUPER_ADMIN | ASSET_MANAGER | ASSET_HANDLER
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application Application @relation(fields: [applicationKey], references: [key], onDelete: Cascade)
+
+  @@unique([userId, applicationKey])
+  @@index([applicationKey])
+  @@map("user_app_roles")
+}

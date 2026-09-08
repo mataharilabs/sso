@@ -1,0 +1,33 @@
+"use server";
+
+import { AuthError } from "next-auth";
+import { signIn, signOut } from "@/auth";
+import { safeCallbackUrl } from "@/lib/callback";
+
+export async function authenticate(
+  _prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
+  const callbackUrl = safeCallbackUrl(String(formData.get("callbackUrl") ?? "/"));
+  try {
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirectTo: callbackUrl,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Email atau password salah.";
+        default:
+          return "Gagal masuk. Coba lagi.";
+      }
+    }
+    throw error;
+  }
+}
+
+export async function logoutEverywhere() {
+  await signOut({ redirectTo: "/login" });
+}
