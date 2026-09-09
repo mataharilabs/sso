@@ -1,3 +1,19 @@
+// Metadata aplikasi terhubung: URL & status ketersediaan (untuk launchpad /dash).
+export type AppMeta = { name: string; url: string; live: boolean };
+
+export const APP_META: Record<string, AppMeta> = {
+  ASET: {
+    name: "Manajemen Aset",
+    url: process.env.ASET_URL ?? "https://aset.asiacommerce.net",
+    live: true,
+  },
+  HRIS: {
+    name: "HRIS",
+    url: process.env.HRIS_URL ?? "https://hris.asiacommerce.net",
+    live: false, // belum ada website → tampil "Segera hadir"
+  },
+};
+
 // Role per aplikasi (bisa berbeda tiap app). Dipakai UI manajemen user.
 export const APP_ROLE_OPTIONS: Record<string, { value: string; label: string }[]> =
   {

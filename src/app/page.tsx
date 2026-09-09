@@ -3,6 +3,6 @@ import { getCurrentUser } from "@/lib/session";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
-  if (user) redirect("/users");
+  if (user) redirect("/dash");
   redirect("/login");
 }
