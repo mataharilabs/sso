@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-300: #a5b4fc;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #312e81;
+  /* Brand = merah AsiaCommerce (ref: seller.asiacommerce.net → #FE214F).
+     Dipakai lintas halaman: Button, focus ring, gradient auth, dsb. */
+  --color-brand-50: #fff1f4;
+  --color-brand-100: #ffe0e7;
+  --color-brand-200: #ffc7d3;
+  --color-brand-300: #ff9db1;
+  --color-brand-400: #ff5c7e;
+  --color-brand-500: #fe214f;
+  --color-brand-600: #e60840;
+  --color-brand-700: #c20536;
+  --color-brand-800: #a10733;
+  --color-brand-900: #870a31;
 
   /* Aksen brand AsiaCommerce (ref: seller.asiacommerce.net → #FE214F) */
   --color-accent-50: #fff1f4;

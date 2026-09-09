@@ -13,8 +13,8 @@ export default async function DashboardLayout({
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-slate-200 bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-white via-brand-50/30 to-white">
+      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/dash" className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-white">
@@ -59,7 +59,7 @@ export default async function DashboardLayout({
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl p-6">{children}</main>
+      <main className="animate-fade-up mx-auto max-w-6xl p-6">{children}</main>
     </div>
   );
 }
