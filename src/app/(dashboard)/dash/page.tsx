@@ -3,7 +3,7 @@ import { ArrowRight, Clock, Settings, Package, Users2, Ban } from "lucide-react"
 import { requireUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { APP_META, APP_ROLE_OPTIONS } from "@/lib/constants";
 
@@ -80,14 +80,15 @@ export default async function DashPage() {
 
               <div className="mt-4">
                 {meta.live ? (
-                  <a href={meta.url} target="_self">
-                    <Button
-                      className="w-full"
-                      variant={hasAccess ? "default" : "outline"}
-                    >
-                      Buka Aplikasi
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
+                  <a
+                    href={meta.url}
+                    className={buttonVariants({
+                      variant: hasAccess ? "default" : "outline",
+                      className: "w-full",
+                    })}
+                  >
+                    Buka Aplikasi
+                    <ArrowRight className="h-4 w-4" />
                   </a>
                 ) : (
                   <Button variant="secondary" className="w-full" disabled>

@@ -2,7 +2,10 @@ import type { NextAuthConfig } from "next-auth";
 import { safeCallbackUrl } from "@/lib/callback";
 
 const isProd = process.env.NODE_ENV === "production";
-const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
+// Di produksi, pastikan cookie ter-scope ke seluruh subdomain agar sesi
+// terbagi (SSO ↔ ASET ↔ HRIS). Fallback aman bila COOKIE_DOMAIN lupa di-set.
+const cookieDomain =
+  process.env.COOKIE_DOMAIN || (isProd ? ".asiacommerce.net" : undefined);
 
 // Nama cookie HARUS identik di semua app (SSO/ASET/HRIS) — dipakai sebagai
 // salt enkripsi JWT Auth.js, sehingga token bisa didekripsi lintas app.
