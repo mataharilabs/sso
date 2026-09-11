@@ -10,7 +10,7 @@ export const APP_META: Record<string, AppMeta> = {
   HRIS: {
     name: "HRIS",
     url: process.env.HRIS_URL ?? "https://hris.asiacommerce.net",
-    live: false, // belum ada website → tampil "Segera hadir"
+    live: true,
   },
 };
 
