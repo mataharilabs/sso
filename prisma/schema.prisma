@@ -26,7 +26,9 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users User[]
+  users       User[]
+  departments Department[]
+  offices     Office[]
 
   @@map("companies")
 }
@@ -77,20 +79,65 @@ model UserProfile {
   emergencyRelation String?
   emergencyPhone    String?
 
+  // Domisili
+  domicileCountry  String?
+  domicileProvince String?
+  domicileCity     String?
+
   // Kepegawaian
   employeeId       String?
   jobTitle         String?
-  department       String?
+  department       String? // deprecated → pakai departmentId
+  departmentId     String?
   level            String?
-  workLocation     String?
+  workLocation     String? // deprecated → pakai officeId (Lokasi Kantor)
+  officeId         String?
   joinDate         DateTime?
   endDate          DateTime?
   employmentStatus EmploymentStatus?
+
+  dept   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  office Office?     @relation(fields: [officeId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("user_profiles")
+}
+
+model Department {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company  Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  profiles UserProfile[]
+
+  @@unique([name, companyId])
+  @@index([companyId])
+  @@map("departments")
+}
+
+model Office {
+  id        String   @id @default(cuid())
+  name      String
+  country   String?
+  province  String?
+  city      String?
+  address   String?
+  isPrimary Boolean  @default(false)
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company  Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  profiles UserProfile[]
+
+  @@unique([name, companyId])
+  @@index([companyId])
+  @@map("offices")
 }
 
 enum Gender {

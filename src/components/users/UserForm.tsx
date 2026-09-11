@@ -13,6 +13,8 @@ import {
   MARITAL_STATUS_LABELS,
   EMPLOYMENT_STATUS_LABELS,
 } from "@/lib/constants";
+import { COUNTRIES } from "@/lib/countries";
+import { fetchProvinces, fetchRegencies, type Region } from "@/lib/region";
 
 type Option = { id: string; name: string };
 type AppOption = { key: string; name: string };
@@ -42,6 +44,10 @@ export function UserForm({ userId, initial }: Props) {
   const isEdit = Boolean(userId);
   const [managers, setManagers] = useState<Option[]>([]);
   const [apps, setApps] = useState<AppOption[]>([]);
+  const [departments, setDepartments] = useState<Option[]>([]);
+  const [offices, setOffices] = useState<Option[]>([]);
+  const [provinces, setProvinces] = useState<Region[]>([]);
+  const [regencies, setRegencies] = useState<Region[]>([]);
   const [saving, setSaving] = useState(false);
 
   const [account, setAccount] = useState({
@@ -76,9 +82,29 @@ export function UserForm({ userId, initial }: Props) {
       .then((d) => {
         setManagers((d.users ?? []).filter((u: Option) => u.id !== userId));
         setApps(d.applications ?? []);
+        setDepartments(d.departments ?? []);
+        setOffices(d.offices ?? []);
       })
       .catch(() => {});
   }, [userId]);
+
+  const isID = profile.domicileCountry === "Indonesia";
+
+  // Muat provinsi bila negara = Indonesia
+  useEffect(() => {
+    if (isID && provinces.length === 0) fetchProvinces().then(setProvinces);
+  }, [isID, provinces.length]);
+
+  // Muat kota saat provinsi (tersimpan/terpilih) tersedia
+  useEffect(() => {
+    if (!isID) {
+      setRegencies([]);
+      return;
+    }
+    const prov = provinces.find((p) => p.name === profile.domicileProvince);
+    if (prov) fetchRegencies(prov.id).then(setRegencies);
+    else setRegencies([]);
+  }, [isID, profile.domicileProvince, provinces]);
 
   const setP = (k: string, v: string) => setProfile((prev) => ({ ...prev, [k]: v }));
 
@@ -239,6 +265,88 @@ export function UserForm({ userId, initial }: Props) {
         </CardContent>
       </Card>
 
+      {/* Domisili */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Domisili</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-3">
+          <div className="space-y-1.5">
+            <Label>Negara Domisili</Label>
+            <Select
+              value={profile.domicileCountry ?? ""}
+              onChange={(e) => {
+                const c = e.target.value;
+                setProfile((p) => ({
+                  ...p,
+                  domicileCountry: c,
+                  domicileProvince: "",
+                  domicileCity: "",
+                }));
+              }}
+            >
+              <option value="">- Pilih Negara -</option>
+              {COUNTRIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Provinsi Domisili</Label>
+            {isID ? (
+              <Select
+                value={profile.domicileProvince ?? ""}
+                onChange={(e) =>
+                  setProfile((p) => ({
+                    ...p,
+                    domicileProvince: e.target.value,
+                    domicileCity: "",
+                  }))
+                }
+              >
+                <option value="">- Pilih Provinsi -</option>
+                {provinces.map((p) => (
+                  <option key={p.id} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <Input
+                value={profile.domicileProvince ?? ""}
+                onChange={(e) => setP("domicileProvince", e.target.value)}
+              />
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Kota Domisili</Label>
+            {isID ? (
+              <Select
+                value={profile.domicileCity ?? ""}
+                onChange={(e) => setP("domicileCity", e.target.value)}
+                disabled={!profile.domicileProvince}
+              >
+                <option value="">- Pilih Kota -</option>
+                {regencies.map((r) => (
+                  <option key={r.id} value={r.name}>
+                    {r.name}
+                  </option>
+                ))}
+              </Select>
+            ) : (
+              <Input
+                value={profile.domicileCity ?? ""}
+                onChange={(e) => setP("domicileCity", e.target.value)}
+              />
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Kepegawaian</CardTitle>
@@ -246,9 +354,35 @@ export function UserForm({ userId, initial }: Props) {
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <Field label="ID Karyawan" k="employeeId" profile={profile} onChange={setP} />
           <Field label="Jabatan" k="jobTitle" profile={profile} onChange={setP} />
-          <Field label="Departemen / Divisi" k="department" profile={profile} onChange={setP} />
+          <div className="space-y-1.5">
+            <Label>Departemen / Divisi</Label>
+            <Select
+              value={profile.departmentId ?? ""}
+              onChange={(e) => setP("departmentId", e.target.value)}
+            >
+              <option value="">- Pilih Departemen -</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </Select>
+          </div>
           <Field label="Level / Golongan" k="level" profile={profile} onChange={setP} />
-          <Field label="Lokasi Kerja" k="workLocation" profile={profile} onChange={setP} />
+          <div className="space-y-1.5">
+            <Label>Lokasi Kantor</Label>
+            <Select
+              value={profile.officeId ?? ""}
+              onChange={(e) => setP("officeId", e.target.value)}
+            >
+              <option value="">- Pilih Kantor -</option>
+              {offices.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.name}
+                </option>
+              ))}
+            </Select>
+          </div>
           <div className="space-y-1.5">
             <Label>Status Kerja</Label>
             <Select value={profile.employmentStatus ?? ""} onChange={(e) => setP("employmentStatus", e.target.value)}>

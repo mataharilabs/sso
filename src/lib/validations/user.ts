@@ -27,15 +27,20 @@ export const userProfileSchema = z.object({
   emergencyPhone: opt(),
   employeeId: opt(),
   jobTitle: opt(),
-  department: opt(),
+  departmentId: opt(),
   level: opt(),
-  workLocation: opt(),
+  officeId: opt(),
   joinDate: opt(),
   endDate: opt(),
   employmentStatus: z.preprocess(
     emptyToNull,
     z.enum(["PERMANENT", "CONTRACT", "INTERNSHIP", "FREELANCE"]).nullable().optional()
   ),
+
+  // Domisili
+  domicileCountry: opt(),
+  domicileProvince: opt(),
+  domicileCity: opt(),
 });
 
 // Role per aplikasi: { ASET: "ASSET_MANAGER", HRIS: "" } — "" berarti tanpa akses

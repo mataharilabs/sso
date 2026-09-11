@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShieldCheck, Users, LogOut, LayoutGrid } from "lucide-react";
+import { ShieldCheck, Users, LogOut, LayoutGrid, Building, Briefcase } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { initials } from "@/lib/utils";
 
@@ -36,13 +36,29 @@ export default async function DashboardLayout({
               Aplikasi
             </Link>
             {user.isSuperAdmin && (
-              <Link
-                href="/users"
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
-              >
-                <Users className="h-4 w-4" />
-                Pengguna
-              </Link>
+              <>
+                <Link
+                  href="/users"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                >
+                  <Users className="h-4 w-4" />
+                  Pengguna
+                </Link>
+                <Link
+                  href="/departments"
+                  className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:flex"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  Departemen
+                </Link>
+                <Link
+                  href="/offices"
+                  className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:flex"
+                >
+                  <Building className="h-4 w-4" />
+                  Kantor
+                </Link>
+              </>
             )}
             <div className="mx-2 flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
