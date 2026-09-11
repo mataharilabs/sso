@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
   const count = await prisma.userAppRole.count({
     where: {
       applicationKey,
-      user: { isActive: true, ...(companyId ? { companyId } : {}) },
+      // Admin platform SSO (isSuperAdmin) tidak dihitung sebagai pengguna aplikasi.
+      user: { isActive: true, isSuperAdmin: false, ...(companyId ? { companyId } : {}) },
     },
   });
   return Response.json({ count });

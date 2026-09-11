@@ -9,7 +9,8 @@ export async function GET(req: NextRequest) {
   const companyId = req.nextUrl.searchParams.get("companyId") || undefined;
 
   const users = await prisma.user.findMany({
-    where: { isActive: true, ...(companyId ? { companyId } : {}) },
+    // Admin platform SSO (isSuperAdmin) bukan karyawan → dikecualikan.
+    where: { isActive: true, isSuperAdmin: false, ...(companyId ? { companyId } : {}) },
     orderBy: { name: "asc" },
     select: {
       id: true,

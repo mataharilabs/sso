@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
     where: {
       applicationKey,
       ...(role ? { role } : {}),
-      ...(companyId ? { user: { companyId } } : {}),
-      user: { isActive: true, ...(companyId ? { companyId } : {}) },
+      // Admin platform SSO (isSuperAdmin) dikecualikan dari daftar aplikasi.
+      user: { isActive: true, isSuperAdmin: false, ...(companyId ? { companyId } : {}) },
     },
     include: { user: { select: { id: true, name: true, email: true } } },
     orderBy: { user: { name: "asc" } },
