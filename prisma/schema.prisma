@@ -172,6 +172,19 @@ model Application {
   @@map("applications")
 }
 
+// Kode OTP untuk login (dikirim ke email & WhatsApp user).
+model LoginOtp {
+  id         String    @id @default(cuid())
+  email      String
+  code       String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([email])
+  @@map("login_otps")
+}
+
 // Setelan notifikasi platform (singleton, id = "global").
 model NotificationSetting {
   id              String   @id @default("global")
