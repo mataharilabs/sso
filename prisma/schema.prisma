@@ -172,6 +172,18 @@ model Application {
   @@map("applications")
 }
 
+// Setelan notifikasi platform (singleton, id = "global").
+model NotificationSetting {
+  id              String   @id @default("global")
+  whatsappEnabled Boolean  @default(false)
+  emailEnabled    Boolean  @default(false)
+  emailFrom       String? // label pengirim (nilai asli EMAIL_FROM di env)
+  whatsappPhone   String? // cache nomor WA yang tersambung
+  updatedAt       DateTime @updatedAt
+
+  @@map("notification_settings")
+}
+
 // Akses & role user PER aplikasi
 model UserAppRole {
   id             String   @id @default(cuid())
