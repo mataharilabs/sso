@@ -19,6 +19,13 @@ export async function POST(req: NextRequest) {
   try {
     const data = schema.parse(await req.json());
     const result = await sendNotification(data);
+    // Log kegagalan channel agar terlihat di log (mis. Vercel).
+    if (result.whatsapp && !result.whatsapp.sent) {
+      console.error("[NOTIFY][wa] gagal:", result.whatsapp.error, "phone=", data.to.phone);
+    }
+    if (result.email && !result.email.sent) {
+      console.error("[NOTIFY][email] gagal:", result.email.error, "email=", data.to.email);
+    }
     return Response.json({ ok: true, result });
   } catch (e) {
     if (e instanceof z.ZodError) {

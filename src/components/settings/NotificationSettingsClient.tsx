@@ -150,11 +150,12 @@ export function NotificationSettingsClient() {
       const res = await fetch("/api/settings/test", { method: "POST" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Gagal");
-      const r = data.result ?? {};
-      const parts: string[] = [];
-      if (r.email) parts.push(`Email: ${r.email.sent ? "terkirim" : r.email.error}`);
-      if (r.whatsapp) parts.push(`WA: ${r.whatsapp.sent ? "terkirim" : r.whatsapp.error}`);
-      toast(parts.length ? parts.join(" · ") : "Tidak ada channel aktif/kontak", parts.length ? "info" : "error");
+      const anySent = data.email?.sent || data.whatsapp?.sent;
+      const parts = [
+        `Email: ${data.email?.sent ? "terkirim ✅" : `gagal — ${data.email?.reason}`}`,
+        `WA: ${data.whatsapp?.sent ? "terkirim ✅" : `gagal — ${data.whatsapp?.reason}`}`,
+      ];
+      toast(parts.join(" · "), anySent ? "info" : "error");
     } catch (e) {
       toast((e as Error).message, "error");
     } finally {
