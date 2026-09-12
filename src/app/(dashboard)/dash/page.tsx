@@ -12,6 +12,15 @@ const APP_ICONS: Record<string, typeof Package> = {
   HRIS: Users2,
 };
 
+// Tautan cepat per aplikasi (muncul di bawah "Buka Aplikasi").
+const QUICK_LINKS: Record<string, { label: string; path: string }[]> = {
+  ASET: [
+    { label: "Lihat Aset", path: "/assets" },
+    { label: "Scan Aset", path: "/scan" },
+  ],
+  HRIS: [{ label: "Ajukan Cuti", path: "/leave?new=1" }],
+};
+
 function roleLabel(appKey: string, role: string): string {
   return APP_ROLE_OPTIONS[appKey]?.find((o) => o.value === role)?.label ?? role;
 }
@@ -95,6 +104,21 @@ export default async function DashPage() {
                     <Clock className="h-4 w-4" />
                     Segera hadir
                   </Button>
+                )}
+
+                {meta.live && hasAccess && QUICK_LINKS[key] && (
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                    {QUICK_LINKS[key].map((q) => (
+                      <a
+                        key={q.path}
+                        href={`${meta.url}${q.path}`}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 hover:underline"
+                      >
+                        {q.label}
+                        <ArrowRight className="h-3 w-3" />
+                      </a>
+                    ))}
+                  </div>
                 )}
               </div>
             </Card>
