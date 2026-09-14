@@ -57,8 +57,20 @@ export function UsersList({ currentUserId }: { currentUserId: string }) {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Pengguna</h1>
-          <p className="text-sm text-slate-500">Kelola identitas, profil, dan akses per-aplikasi.</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-slate-900">Pengguna</h1>
+            {!loading && (
+              <Badge className="border-brand-200 bg-brand-50 text-brand-700">
+                {rows.length} total
+              </Badge>
+            )}
+          </div>
+          <p className="text-sm text-slate-500">
+            Kelola identitas, profil, dan akses per-aplikasi.
+            {!loading && (
+              <> · {rows.filter((u) => u.isActive).length} aktif</>
+            )}
+          </p>
         </div>
         <Link href="/users/new">
           <Button><Plus className="h-4 w-4" />Tambah Pengguna</Button>
