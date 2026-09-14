@@ -188,11 +188,13 @@ model LoginOtp {
 // Setelan notifikasi platform (singleton, id = "global").
 model NotificationSetting {
   id              String   @id @default("global")
-  whatsappEnabled Boolean  @default(false)
-  emailEnabled    Boolean  @default(false)
-  emailFrom       String? // label pengirim (nilai asli EMAIL_FROM di env)
-  whatsappPhone   String? // cache nomor WA yang tersambung
-  updatedAt       DateTime @updatedAt
+  whatsappEnabled   Boolean  @default(false)
+  emailEnabled      Boolean  @default(false)
+  emailFrom         String? // label pengirim (nilai asli EMAIL_FROM di env)
+  whatsappPhone     String? // cache nomor WA yang tersambung
+  whatsappGroupJid  String? // grup WhatsApp kantor untuk notifikasi bersama
+  whatsappGroupName String? // nama grup (tampilan)
+  updatedAt         DateTime @updatedAt
 
   @@map("notification_settings")
 }

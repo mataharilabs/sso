@@ -35,6 +35,20 @@ export async function waStatus(): Promise<WaStatus> {
   }
 }
 
+export type WaGroup = { id: string; subject: string };
+
+export async function waGroups(): Promise<WaGroup[]> {
+  if (!waConfigured()) return [];
+  try {
+    const res = await gw("/groups");
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.groups ?? []) as WaGroup[];
+  } catch {
+    return [];
+  }
+}
+
 export async function waQr(): Promise<{ connected: boolean; qr: string | null }> {
   if (!waConfigured()) return { connected: false, qr: null };
   try {

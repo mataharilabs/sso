@@ -22,8 +22,11 @@ type Settings = {
   emailFrom: string | null;
   whatsappConfigured: boolean;
   emailConfigured: boolean;
+  whatsappGroupJid: string | null;
+  whatsappGroupName: string | null;
 };
 type WaStatus = { connected: boolean; phone: string | null; state: string };
+type WaGroup = { id: string; subject: string };
 
 function Toggle({
   checked,
@@ -63,6 +66,46 @@ export function NotificationSettingsClient() {
   const [qrOpen, setQrOpen] = useState(false);
   const [qr, setQr] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const [groups, setGroups] = useState<WaGroup[] | null>(null);
+  const [loadingGroups, setLoadingGroups] = useState(false);
+  const [savingGroup, setSavingGroup] = useState(false);
+
+  async function loadGroups() {
+    setLoadingGroups(true);
+    try {
+      const res = await fetch("/api/settings/whatsapp/groups");
+      const data = await res.json().catch(() => ({}));
+      setGroups(data.groups ?? []);
+    } catch {
+      setGroups([]);
+    } finally {
+      setLoadingGroups(false);
+    }
+  }
+
+  async function saveGroup(jid: string, name: string) {
+    setSavingGroup(true);
+    try {
+      const res = await fetch("/api/settings/notifications", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          whatsappGroupJid: jid || null,
+          whatsappGroupName: name || null,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setSettings((s) =>
+        s ? { ...s, whatsappGroupJid: jid || null, whatsappGroupName: name || null } : s
+      );
+      toast("Grup notifikasi disimpan", "success");
+    } catch {
+      toast("Gagal menyimpan grup", "error");
+    } finally {
+      setSavingGroup(false);
+    }
+  }
 
   const loadSettings = useCallback(async () => {
     const res = await fetch("/api/settings/notifications");
@@ -272,6 +315,72 @@ export function NotificationSettingsClient() {
           </div>
         )}
       </Card>
+
+      {/* Grup WhatsApp kantor */}
+      {settings.whatsappConfigured && (
+        <Card className="p-5">
+          <h2 className="mb-1 text-base font-semibold text-slate-900">
+            Grup WhatsApp Kantor
+          </h2>
+          <p className="mb-4 text-sm text-slate-500">
+            Grup tujuan notifikasi bersama (mis. booking ruang meeting). Nomor WA
+            di atas harus menjadi anggota grup.
+          </p>
+
+          <div className="mb-3 text-sm">
+            Grup aktif:{" "}
+            {settings.whatsappGroupName || settings.whatsappGroupJid ? (
+              <strong className="text-slate-800">
+                {settings.whatsappGroupName ?? settings.whatsappGroupJid}
+              </strong>
+            ) : (
+              <span className="text-slate-400">belum dipilih</span>
+            )}
+          </div>
+
+          {groups === null ? (
+            <Button
+              variant="outline"
+              onClick={loadGroups}
+              disabled={loadingGroups || !wa?.connected}
+            >
+              {loadingGroups ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <MessageCircle className="h-4 w-4" />
+              )}
+              {wa?.connected ? "Muat daftar grup" : "Sambungkan WA dulu"}
+            </Button>
+          ) : (
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                className="h-10 flex-1 rounded-lg border border-slate-300 bg-white px-3 text-sm"
+                defaultValue={settings.whatsappGroupJid ?? ""}
+                onChange={(e) => {
+                  const g = groups.find((x) => x.id === e.target.value);
+                  if (g) saveGroup(g.id, g.subject);
+                  else saveGroup("", "");
+                }}
+                disabled={savingGroup}
+              >
+                <option value="">- Pilih grup -</option>
+                {groups.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.subject}
+                  </option>
+                ))}
+              </select>
+              <Button variant="ghost" onClick={loadGroups} disabled={loadingGroups}>
+                {loadingGroups ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Muat ulang"
+                )}
+              </Button>
+            </div>
+          )}
+        </Card>
+      )}
 
       <Dialog open={qrOpen} onClose={closeConnect} title="Sambungkan WhatsApp">
         <div className="text-center">

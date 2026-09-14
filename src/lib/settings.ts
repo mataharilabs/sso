@@ -8,6 +8,8 @@ export type NotificationSettingData = {
   emailEnabled: boolean;
   emailFrom: string | null;
   whatsappPhone: string | null;
+  whatsappGroupJid: string | null;
+  whatsappGroupName: string | null;
 };
 
 /** Ambil (atau buat) baris setelan notifikasi singleton. */
@@ -24,6 +26,8 @@ export async function updateNotificationSetting(data: {
   whatsappEnabled?: boolean;
   emailEnabled?: boolean;
   whatsappPhone?: string | null;
+  whatsappGroupJid?: string | null;
+  whatsappGroupName?: string | null;
 }): Promise<NotificationSettingData> {
   return prisma.notificationSetting.upsert({
     where: { id: GLOBAL_ID },

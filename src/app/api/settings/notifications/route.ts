@@ -16,6 +16,8 @@ export async function GET() {
       emailFrom: process.env.EMAIL_FROM ?? s.emailFrom ?? null,
       whatsappConfigured: waConfigured(),
       emailConfigured: emailConfigured(),
+      whatsappGroupJid: s.whatsappGroupJid,
+      whatsappGroupName: s.whatsappGroupName,
     });
   } catch (e) {
     return handleApiError(e);
@@ -25,6 +27,8 @@ export async function GET() {
 const schema = z.object({
   whatsappEnabled: z.boolean().optional(),
   emailEnabled: z.boolean().optional(),
+  whatsappGroupJid: z.string().nullable().optional(),
+  whatsappGroupName: z.string().nullable().optional(),
 });
 
 export async function PUT(req: NextRequest) {
@@ -35,6 +39,8 @@ export async function PUT(req: NextRequest) {
     return ok({
       whatsappEnabled: s.whatsappEnabled,
       emailEnabled: s.emailEnabled,
+      whatsappGroupJid: s.whatsappGroupJid,
+      whatsappGroupName: s.whatsappGroupName,
     });
   } catch (e) {
     return handleApiError(e);
