@@ -18,7 +18,10 @@ const QUICK_LINKS: Record<string, { label: string; path: string }[]> = {
     { label: "Lihat Aset", path: "/assets" },
     { label: "Scan Aset", path: "/scan" },
   ],
-  HRIS: [{ label: "Ajukan Cuti", path: "/leave?new=1" }],
+  HRIS: [
+    { label: "Ajukan Cuti", path: "/leave?new=1" },
+    { label: "Book Ruang Meeting", path: "/meeting-rooms" },
+  ],
 };
 
 function roleLabel(appKey: string, role: string): string {
@@ -107,15 +110,14 @@ export default async function DashPage() {
                 )}
 
                 {meta.live && hasAccess && QUICK_LINKS[key] && (
-                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                  <div className="mt-2 flex flex-wrap gap-2">
                     {QUICK_LINKS[key].map((q) => (
                       <a
                         key={q.path}
                         href={`${meta.url}${q.path}`}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-brand-700 hover:underline"
+                        className={buttonVariants({ variant: "secondary", size: "sm" })}
                       >
                         {q.label}
-                        <ArrowRight className="h-3 w-3" />
                       </a>
                     ))}
                   </div>
