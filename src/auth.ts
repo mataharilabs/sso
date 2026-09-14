@@ -64,19 +64,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return toAuthUser(user);
       },
     }),
-    // Login dengan kode OTP (email + WhatsApp)
+    // Login dengan kode OTP (email atau nomor WhatsApp)
     Credentials({
       id: "otp",
       credentials: {
-        email: { label: "Email", type: "email" },
+        identifier: { label: "Email/Nomor", type: "text" },
         code: { label: "Kode", type: "text" },
       },
       async authorize(credentials) {
-        const email = String(credentials?.email ?? "");
+        const identifier = String(credentials?.identifier ?? "");
         const code = String(credentials?.code ?? "");
-        if (!email || code.length < 4) return null;
+        if (!identifier || code.length < 4) return null;
 
-        const user = await verifyLoginOtp(email, code);
+        const user = await verifyLoginOtp(identifier, code);
         if (!user || !user.isActive) return null;
 
         return toAuthUser(user);

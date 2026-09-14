@@ -29,9 +29,11 @@ export async function authenticate(
   }
 }
 
-/** Minta kode OTP login (dikirim ke email & WhatsApp). */
-export async function requestLoginOtp(email: string): Promise<OtpRequestResult> {
-  return createAndSendLoginOtp(email);
+/** Minta kode OTP login — identifier bisa email atau nomor WhatsApp. */
+export async function requestLoginOtp(
+  identifier: string
+): Promise<OtpRequestResult> {
+  return createAndSendLoginOtp(identifier);
 }
 
 /** Login memakai kode OTP. */
@@ -42,7 +44,7 @@ export async function authenticateOtp(
   const callbackUrl = safeCallbackUrl(String(formData.get("callbackUrl") ?? "/"));
   try {
     await signIn("otp", {
-      email: formData.get("email"),
+      identifier: formData.get("identifier"),
       code: formData.get("code"),
       redirectTo: callbackUrl,
     });

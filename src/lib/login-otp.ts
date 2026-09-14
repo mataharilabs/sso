@@ -9,26 +9,79 @@ const TTL_MS = 5 * 60 * 1000;
 export type OtpRequestResult = {
   ok: boolean;
   error?: string;
-  channels?: { email: boolean; whatsapp: boolean };
+  channel?: "email" | "whatsapp";
+  dest?: string; // tujuan tersamar (untuk info di UI)
 };
 
-/** Buat kode OTP login & kirim ke email + WhatsApp user. Tidak lewat toggle notifikasi. */
-export async function createAndSendLoginOtp(
-  rawEmail: string
-): Promise<OtpRequestResult> {
-  const email = rawEmail.trim().toLowerCase();
-  if (!email) return { ok: false, error: "Email wajib diisi" };
+type ResolvedUser = {
+  email: string;
+  phone: string | null;
+  name: string | null;
+  kind: "email" | "phone";
+};
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { email: true, phone: true, name: true, isActive: true },
+function isEmail(identifier: string): boolean {
+  return identifier.includes("@");
+}
+
+function maskEmail(e: string): string {
+  const [u, d] = e.split("@");
+  if (!d) return e;
+  return `${u.slice(0, 2)}${"•".repeat(Math.max(2, u.length - 2))}@${d}`;
+}
+function maskPhone(p: string): string {
+  const d = p.replace(/\D/g, "");
+  return d.length <= 4 ? d : `${"•".repeat(d.length - 4)}${d.slice(-4)}`;
+}
+
+/** Cari user aktif dari email ATAU nomor (dinormalkan). */
+async function resolveUser(identifier: string): Promise<ResolvedUser | null> {
+  const id = identifier.trim();
+  if (!id) return null;
+
+  if (isEmail(id)) {
+    const user = await prisma.user.findUnique({
+      where: { email: id.toLowerCase() },
+      select: { email: true, phone: true, name: true, isActive: true },
+    });
+    if (!user || !user.isActive) return null;
+    return { email: user.email, phone: user.phone, name: user.name, kind: "email" };
+  }
+
+  const norm = normalizePhone(id);
+  if (!norm) return null;
+  // Cocokkan nomor secara ternormalisasi (format tersimpan bisa 08../+62../62..).
+  const candidates = await prisma.user.findMany({
+    where: { isActive: true, phone: { not: null } },
+    select: { email: true, phone: true, name: true },
   });
-  if (!user || !user.isActive) {
-    return { ok: false, error: "Email tidak terdaftar atau akun nonaktif" };
+  const match = candidates.find((u) => normalizePhone(u.phone) === norm);
+  if (!match) return null;
+  return { email: match.email, phone: match.phone, name: match.name, kind: "phone" };
+}
+
+/**
+ * Buat kode OTP login & kirim ke channel sesuai identitas:
+ * email → email; nomor → WhatsApp. Tidak lewat toggle notifikasi.
+ */
+export async function createAndSendLoginOtp(
+  identifier: string
+): Promise<OtpRequestResult> {
+  const id = identifier.trim();
+  if (!id) return { ok: false, error: "Masukkan nomor WhatsApp atau email" };
+
+  const resolved = await resolveUser(id);
+  if (!resolved) {
+    return {
+      ok: false,
+      error: isEmail(id)
+        ? "Email tidak terdaftar atau akun nonaktif"
+        : "Nomor WhatsApp tidak terdaftar atau akun nonaktif",
+    };
   }
 
   const last = await prisma.loginOtp.findFirst({
-    where: { email, consumedAt: null },
+    where: { email: resolved.email, consumedAt: null },
     orderBy: { createdAt: "desc" },
   });
   if (last && Date.now() - last.createdAt.getTime() < COOLDOWN_MS) {
@@ -40,51 +93,54 @@ export async function createAndSendLoginOtp(
 
   const code = String(Math.floor(100000 + Math.random() * 900000));
   const otp = await prisma.loginOtp.create({
-    data: { email, code, expiresAt: new Date(Date.now() + TTL_MS) },
+    data: { email: resolved.email, code, expiresAt: new Date(Date.now() + TTL_MS) },
   });
 
-  let sentEmail = false;
-  let sentWa = false;
-
-  if (emailConfigured()) {
+  if (resolved.kind === "email") {
+    if (!emailConfigured()) {
+      await prisma.loginOtp.delete({ where: { id: otp.id } }).catch(() => {});
+      return { ok: false, error: "Email belum dikonfigurasi. Coba login dengan sandi." };
+    }
     try {
       await sendEmail({
-        to: user.email,
+        to: resolved.email,
         subject: "Kode Masuk AsiaCommerce ID",
         text: `Kode masuk Anda: ${code}\nBerlaku 5 menit. Jangan bagikan kode ini ke siapa pun.`,
       });
-      sentEmail = true;
+      return { ok: true, channel: "email", dest: maskEmail(resolved.email) };
     } catch (e) {
       console.error("[LOGIN_OTP][email]", (e as Error).message);
+      await prisma.loginOtp.delete({ where: { id: otp.id } }).catch(() => {});
+      return { ok: false, error: "Gagal mengirim kode ke email. Coba lagi." };
     }
   }
 
-  const phone = normalizePhone(user.phone);
-  if (waConfigured() && phone) {
-    try {
-      await waSend(phone, `Kode masuk AsiaCommerce ID: *${code}* (berlaku 5 menit).`);
-      sentWa = true;
-    } catch (e) {
-      console.error("[LOGIN_OTP][wa]", (e as Error).message);
-    }
-  }
-
-  if (!sentEmail && !sentWa) {
+  // kind === "phone"
+  const phone = normalizePhone(resolved.phone);
+  if (!waConfigured() || !phone) {
     await prisma.loginOtp.delete({ where: { id: otp.id } }).catch(() => {});
     return {
       ok: false,
-      error: "Gagal mengirim kode. Coba login dengan sandi atau hubungi admin.",
+      error: "WhatsApp belum tersambung. Coba login dengan email atau sandi.",
     };
   }
-
-  return { ok: true, channels: { email: sentEmail, whatsapp: sentWa } };
+  try {
+    await waSend(phone, `Kode masuk AsiaCommerce ID: *${code}* (berlaku 5 menit).`);
+    return { ok: true, channel: "whatsapp", dest: maskPhone(phone) };
+  } catch (e) {
+    console.error("[LOGIN_OTP][wa]", (e as Error).message);
+    await prisma.loginOtp.delete({ where: { id: otp.id } }).catch(() => {});
+    return { ok: false, error: "Gagal mengirim kode ke WhatsApp. Coba lagi." };
+  }
 }
 
-/** Verifikasi OTP; kembalikan user lengkap (dengan appRoles & company) atau null. */
-export async function verifyLoginOtp(rawEmail: string, code: string) {
-  const email = rawEmail.trim().toLowerCase();
+/** Verifikasi OTP dari email/nomor; kembalikan user lengkap atau null. */
+export async function verifyLoginOtp(identifier: string, code: string) {
+  const resolved = await resolveUser(identifier);
+  if (!resolved) return null;
+
   const otp = await prisma.loginOtp.findFirst({
-    where: { email, consumedAt: null, expiresAt: { gt: new Date() } },
+    where: { email: resolved.email, consumedAt: null, expiresAt: { gt: new Date() } },
     orderBy: { createdAt: "desc" },
   });
   if (!otp || otp.code !== code.trim()) return null;
@@ -94,7 +150,7 @@ export async function verifyLoginOtp(rawEmail: string, code: string) {
     data: { consumedAt: new Date() },
   });
   return prisma.user.findUnique({
-    where: { email },
+    where: { email: resolved.email },
     include: { company: true, appRoles: true },
   });
 }
