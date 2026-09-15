@@ -105,7 +105,10 @@ export async function createAndSendLoginOtp(
       await sendEmail({
         to: resolved.email,
         subject: "Kode Masuk AsiaCommerce ID",
-        text: `Kode masuk Anda: ${code}\nBerlaku 5 menit. Jangan bagikan kode ini ke siapa pun.`,
+        text:
+          `Halo! Ini kode masuk kamu ke AsiaCommerce ID:\n\n` +
+          `${code}\n\n` +
+          `Kode ini aktif selama 5 menit. Jangan bagikan ke siapa pun, ya!`,
       });
       return { ok: true, channel: "email", dest: maskEmail(resolved.email) };
     } catch (e) {
@@ -125,7 +128,11 @@ export async function createAndSendLoginOtp(
     };
   }
   try {
-    await waSend(phone, `Kode masuk AsiaCommerce ID: *${code}* (berlaku 5 menit).`);
+    await waSend(
+      phone,
+      `Halo! Ini kode masuk kamu ke AsiaCommerce ID:\n\n*${code}*\n\n` +
+        `Kode ini aktif selama 5 menit. Jangan bagikan ke siapa pun, ya!`
+    );
     return { ok: true, channel: "whatsapp", dest: maskPhone(phone) };
   } catch (e) {
     console.error("[LOGIN_OTP][wa]", (e as Error).message);
