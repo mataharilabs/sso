@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { APP_META } from "@/lib/constants";
+import { MeetingScheduleSection } from "@/components/public/MeetingScheduleSection";
 
 const APP_ICONS: Record<string, typeof Package> = {
   ASET: Package,
@@ -133,6 +134,9 @@ export default async function HomePage() {
           })}
         </div>
       </section>
+
+      {/* Jadwal ruang meeting (publik, dari HRIS) */}
+      <MeetingScheduleSection hrisUrl={APP_META.HRIS.url} />
 
       <footer className="relative z-10 pb-8 text-center text-xs text-slate-400">
         © {new Date().getFullYear()} AsiaCommerce. All rights reserved.
