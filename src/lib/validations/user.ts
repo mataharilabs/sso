@@ -46,9 +46,15 @@ export const userProfileSchema = z.object({
 // Role per aplikasi: { ASET: "ASSET_MANAGER", HRIS: "" } — "" berarti tanpa akses
 const appRolesSchema = z.record(z.string(), z.string()).optional();
 
+// Email login selalu disimpan lowercase (unik & tak sensitif huruf besar/kecil).
+const loginEmail = z
+  .string()
+  .email("Email tidak valid")
+  .transform((v) => v.trim().toLowerCase());
+
 export const createUserSchema = z.object({
   name: z.string().min(2, "Nama minimal 2 karakter"),
-  email: z.string().email("Email tidak valid"),
+  email: loginEmail,
   password: z.string().min(6, "Password minimal 6 karakter"),
   isSuperAdmin: z.boolean().optional(),
   phone: opt(),
@@ -59,7 +65,7 @@ export const createUserSchema = z.object({
 
 export const updateUserSchema = z.object({
   name: z.string().min(2).optional(),
-  email: z.string().email().optional(),
+  email: loginEmail.optional(),
   password: z.preprocess(
     emptyToNull,
     z.string().min(6, "Password minimal 6 karakter").nullable().optional()
