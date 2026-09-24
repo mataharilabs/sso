@@ -12,6 +12,11 @@ export const APP_META: Record<string, AppMeta> = {
     url: process.env.HRIS_URL ?? "https://hris.asiacommerce.net",
     live: true,
   },
+  EVENT: {
+    name: "Event",
+    url: process.env.EVENT_URL ?? "https://event.asiacommerce.net",
+    live: true,
+  },
 };
 
 // Role per aplikasi (bisa berbeda tiap app). Dipakai UI manajemen user.
@@ -26,6 +31,10 @@ export const APP_ROLE_OPTIONS: Record<string, { value: string; label: string }[]
       { value: "HR_ADMIN", label: "HR Admin" },
       { value: "HR_STAFF", label: "HR Staff" },
       { value: "EMPLOYEE", label: "Karyawan" },
+    ],
+    EVENT: [
+      { value: "SUPER_ADMIN", label: "Super Admin" },
+      { value: "EVENT_ADMIN", label: "Event Admin" },
     ],
   };
 
