@@ -17,6 +17,7 @@ const QUICK_LINKS: Record<string, { label: string; path: string }[]> = {
   ASET: [
     { label: "Lihat Aset", path: "/assets" },
     { label: "Scan Aset", path: "/scan" },
+    { label: "Self-Assessment", path: "/assets?modal=self-assessment" },
   ],
   HRIS: [
     { label: "Ajukan Cuti", path: "/leave?new=1" },
