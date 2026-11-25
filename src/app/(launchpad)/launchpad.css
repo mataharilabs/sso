@@ -1,0 +1,589 @@
+/* Launchpad SSO (/dash) — gaya ter-scope di bawah .lp agar tidak bocor ke
+   halaman lain. Token mengikuti brief (brand #D6194B, dsb). Mendukung dark
+   mode (prefers-color-scheme) dan prefers-reduced-motion. */
+
+.lp {
+  --lp-bg: #f7f5f7;
+  --lp-card: #fff;
+  --lp-ink: #1b1f2a;
+  --lp-mute: #5f6475;
+  --lp-line: #e6e2e6;
+  --lp-soft: #f4f1f4;
+  --lp-brand: #d6194b;
+  --lp-brand-d: #b01239;
+  --lp-brand-t: #fde8ee;
+  --lp-ok: #16794c;
+  --lp-warn: #b45309;
+  --lp-err: #c0262d;
+
+  min-height: 100vh;
+  background: var(--lp-bg);
+  color: var(--lp-ink);
+  font-family: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lp {
+    --lp-bg: #14151a;
+    --lp-card: #1e2028;
+    --lp-ink: #f2f1f4;
+    --lp-mute: #a3a6b5;
+    --lp-line: #32343f;
+    --lp-soft: #272a33;
+    --lp-brand: #f0486f;
+    --lp-brand-d: #d6194b;
+    --lp-brand-t: #3a1b26;
+    --lp-ok: #4cc38a;
+    --lp-warn: #f5a94b;
+    --lp-err: #ff7b80;
+  }
+}
+
+.lp *,
+.lp *::before,
+.lp *::after {
+  box-sizing: border-box;
+}
+
+/* ---------- Header ---------- */
+.lp .hd {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--lp-card) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--lp-line);
+}
+.lp .hi {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lp .lg {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-right: auto;
+  text-decoration: none;
+  color: inherit;
+}
+.lp .lg i {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--lp-brand);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+.lp .lg b {
+  display: block;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+.lp .lg small {
+  color: var(--lp-mute);
+  font-size: 12px;
+}
+.lp .sb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1.5px solid var(--lp-line);
+  border-radius: 12px;
+  background: var(--lp-soft);
+  color: var(--lp-mute);
+  font: inherit;
+  cursor: pointer;
+  min-width: 260px;
+}
+.lp .sb:hover {
+  border-color: var(--lp-brand);
+}
+.lp .sb kbd {
+  margin-left: auto;
+  font: 700 11px inherit;
+  border: 1px solid var(--lp-line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  background: var(--lp-card);
+}
+.lp .av {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--lp-brand-t);
+  color: var(--lp-brand);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;
+  border: 0;
+  cursor: pointer;
+}
+.lp .um {
+  position: relative;
+}
+.lp .mn {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  width: 244px;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
+  padding: 8px;
+  animation: lpin 0.15s;
+}
+.lp .mn .u {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--lp-line);
+  margin-bottom: 6px;
+}
+.lp .mn .u small {
+  color: var(--lp-mute);
+  display: block;
+  font-size: 12.5px;
+}
+.lp .mn a,
+.lp .mn button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  border: 0;
+  background: none;
+  padding: 10px 12px;
+  border-radius: 9px;
+  font: 600 14px inherit;
+  color: var(--lp-ink);
+  cursor: pointer;
+}
+.lp .mn a:hover,
+.lp .mn button:hover {
+  background: var(--lp-soft);
+}
+.lp .mn .sep {
+  height: 1px;
+  background: var(--lp-line);
+  margin: 6px 4px;
+}
+
+@keyframes lpin {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* ---------- Isi ---------- */
+.lp .w {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+}
+.lp h1 {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.lp .sub {
+  color: var(--lp-mute);
+  margin: 2px 0 22px;
+}
+.lp .lay {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+.lp h2 {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-mute);
+  margin: 0 0 12px;
+  font-weight: 800;
+}
+.lp .gr {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+/* ---------- Kartu aplikasi ---------- */
+.lp .app {
+  --a: var(--a-l);
+  position: relative;
+  background: var(--lp-card);
+  border: 1.5px solid var(--lp-line);
+  border-radius: 18px;
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  box-shadow: 0 4px 16px rgba(30, 10, 25, 0.04);
+}
+@media (prefers-color-scheme: dark) {
+  .lp .app {
+    --a: var(--a-d);
+  }
+}
+.lp .app:hover {
+  transform: translateY(-3px);
+  border-color: var(--a);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--a) 18%, transparent);
+}
+.lp .app:focus-visible,
+.lp .sb:focus-visible,
+.lp .av:focus-visible,
+.lp .chip:focus-visible,
+.lp .fv:focus-visible,
+.lp .lnk:focus-visible,
+.lp .mn a:focus-visible,
+.lp .mn button:focus-visible {
+  outline: 3px solid var(--lp-brand);
+  outline-offset: 2px;
+}
+.lp .top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.lp .ic {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--a);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  flex: none;
+  position: relative;
+}
+.lp .nb {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--lp-brand);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  padding: 0 5px;
+  border: 2px solid var(--lp-card);
+}
+.lp .app h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+}
+.lp .rl {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--lp-mute);
+  background: var(--lp-soft);
+  padding: 1px 9px;
+  border-radius: 20px;
+  margin-top: 2px;
+}
+.lp .ds {
+  color: var(--lp-mute);
+  font-size: 13.5px;
+  margin: 0;
+}
+.lp .fv {
+  margin-left: auto;
+  align-self: flex-start;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--lp-line);
+  padding: 4px;
+  border-radius: 8px;
+}
+.lp .fv:hover {
+  color: var(--lp-warn);
+}
+.lp .fv.on {
+  color: var(--lp-warn);
+}
+.lp .cs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.lp .chip {
+  border: 1.5px solid var(--lp-line);
+  background: var(--lp-card);
+  color: var(--lp-ink);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font: 700 12.5px inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.lp .chip:hover {
+  border-color: var(--a);
+  color: var(--a);
+  background: color-mix(in srgb, var(--a) 8%, var(--lp-card));
+}
+.lp .ft {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--lp-mute);
+  margin-top: auto;
+}
+.lp .ft svg {
+  transition: transform 0.15s;
+}
+.lp .app:hover .ft svg {
+  transform: translateX(4px);
+  color: var(--a);
+}
+
+/* Kartu terkunci (Aplikasi lain) */
+.lp .app.lk {
+  background: var(--lp-soft);
+  cursor: default;
+  box-shadow: none;
+}
+.lp .app.lk:hover {
+  transform: none;
+  border-color: var(--lp-line);
+  box-shadow: none;
+}
+.lp .app.lk .ic {
+  background: color-mix(in srgb, var(--a) 35%, var(--lp-soft));
+  color: var(--lp-card);
+}
+.lp .lkb {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--lp-mute);
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  padding: 1px 9px;
+  border-radius: 20px;
+  margin-top: 2px;
+}
+.lp .nfo {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 13px;
+  color: var(--lp-mute);
+  margin-top: auto;
+}
+.lp .nfo svg {
+  flex: none;
+  margin-top: 2px;
+}
+.lp .nfo b {
+  color: var(--lp-ink);
+}
+
+/* ---------- Panel Agenda ---------- */
+.lp .pn {
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  border-radius: 18px;
+  padding: 16px 18px;
+  position: sticky;
+  top: 84px;
+  box-shadow: 0 4px 16px rgba(30, 10, 25, 0.04);
+}
+.lp .pn h2 {
+  margin-bottom: 6px;
+}
+.lp .it {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-top: 1px solid var(--lp-line);
+  animation: lpin 0.25s;
+}
+.lp .it:first-of-type {
+  border-top: 0;
+}
+.lp .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--a, var(--lp-brand));
+  margin-top: 7px;
+  flex: none;
+}
+.lp .it b {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+.lp .it small {
+  color: var(--lp-mute);
+  font-size: 12.5px;
+}
+.lp .kd {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--a, var(--lp-brand));
+  margin-bottom: 1px;
+}
+.lp .lnk {
+  display: inline-block;
+  background: none;
+  border: 0;
+  color: var(--lp-brand);
+  font: 700 12.5px inherit;
+  cursor: pointer;
+  padding: 2px 0;
+  margin-top: 2px;
+  text-decoration: none;
+}
+.lp .em {
+  color: var(--lp-mute);
+  padding: 14px 0 6px;
+  font-size: 13.5px;
+}
+
+/* ---------- Command palette ---------- */
+.lp .ov {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 20, 0.5);
+  display: grid;
+  place-items: start center;
+  padding: 12vh 16px 16px;
+  z-index: 40;
+  backdrop-filter: blur(3px);
+}
+.lp .pl {
+  width: 100%;
+  max-width: 560px;
+  background: var(--lp-card);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  animation: lpin 0.2s;
+}
+.lp .pl input {
+  width: 100%;
+  height: 56px;
+  border: 0;
+  border-bottom: 1px solid var(--lp-line);
+  padding: 0 20px;
+  font: 600 16px inherit;
+  background: transparent;
+  color: var(--lp-ink);
+  outline: none;
+}
+.lp .notice {
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lp-warn);
+  border-bottom: 1px solid var(--lp-line);
+}
+.lp .rs {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 8px;
+}
+.lp .r {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 11px;
+  cursor: pointer;
+}
+.lp .r.on,
+.lp .r:hover {
+  background: var(--lp-soft);
+}
+.lp .r .ic {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+.lp .r b {
+  font-weight: 700;
+}
+.lp .r small {
+  margin-left: auto;
+  color: var(--lp-mute);
+  font-size: 12px;
+}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 900px) {
+  .lp .lay {
+    grid-template-columns: 1fr;
+  }
+  .lp .pn {
+    position: static;
+    order: -1;
+  }
+  .lp .sb {
+    min-width: 0;
+    width: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+  .lp .sb span,
+  .lp .sb kbd {
+    display: none;
+  }
+  .lp .hi,
+  .lp .w {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp *,
+  .lp *::before,
+  .lp *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lp .app:hover {
+    transform: none;
+  }
+  .lp .app:hover .ft svg {
+    transform: none;
+  }
+}

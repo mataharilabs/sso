@@ -1,21 +1,62 @@
-// Metadata aplikasi terhubung: URL & status ketersediaan (untuk launchpad /dash).
-export type AppMeta = { name: string; url: string; live: boolean };
+// Pintasan cepat sebuah aplikasi (chip di kartu launchpad & hasil pencarian).
+export type AppShortcut = { label: string; path: string };
+
+// Metadata aplikasi terhubung (untuk launchpad /dash & landing publik).
+// Satu-satunya tempat mendaftarkan aplikasi: cukup tambah entri di sini
+// (ikon, warna, deskripsi, pintasan) tanpa mengubah kode halaman.
+export type AppMeta = {
+  name: string;
+  url: string;
+  live: boolean;
+  // Konfigurasi tampilan launchpad (opsional agar landing lama tetap jalan):
+  description?: string; // satu kalimat fungsi aplikasi (bukan domain)
+  iconKey?: string; // pemilih ikon di launchpad (lihat ICONS di Launchpad.tsx)
+  accent?: string; // warna aksen light mode (hex)
+  accentDark?: string; // warna aksen dark mode (hex) — pastikan kontras cukup
+  openToAll?: boolean; // true = semua karyawan bisa membuka tanpa role khusus
+  shortcuts?: AppShortcut[];
+};
 
 export const APP_META: Record<string, AppMeta> = {
   ASET: {
     name: "Manajemen Aset",
     url: process.env.ASET_URL ?? "https://aset.asiacommerce.net",
     live: true,
+    description: "Kelola dan pantau aset kantor.",
+    iconKey: "aset",
+    accent: "#0F766E",
+    accentDark: "#2DD4BF",
+    openToAll: false, // butuh pemberian akses eksplisit
+    shortcuts: [
+      { label: "Lihat aset", path: "/assets" },
+      { label: "Scan aset", path: "/scan" },
+      { label: "Self-assessment", path: "/assets?modal=self-assessment" },
+    ],
   },
   HRIS: {
     name: "HRIS",
     url: process.env.HRIS_URL ?? "https://hris.asiacommerce.net",
     live: true,
+    description: "Cuti, reimbursement, dan ruang meeting.",
+    iconKey: "hris",
+    accent: "#D6194B",
+    accentDark: "#F0486F",
+    openToAll: true, // semua karyawan punya HRIS
+    shortcuts: [
+      { label: "Ajukan cuti", path: "/leave?new=1" },
+      { label: "Book ruang meeting", path: "/meeting-rooms" },
+    ],
   },
   EVENT: {
     name: "Event",
     url: process.env.EVENT_URL ?? "https://event.asiacommerce.net",
     live: true,
+    description: "Lihat acara dan kegiatan perusahaan.",
+    iconKey: "event",
+    accent: "#6D4AFF",
+    accentDark: "#8B6FFF",
+    openToAll: true, // semua karyawan bisa melihat event
+    shortcuts: [{ label: "Lihat event", path: "/events" }],
   },
 };
 
