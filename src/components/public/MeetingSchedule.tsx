@@ -14,7 +14,7 @@ type Booking = {
   department: string | null;
   startAt: string;
   endAt: string;
-  status: "BOOKED" | "CHECKED_IN";
+  status: "BOOKED" | "CHECKED_IN" | "AUTO_CHECKED_IN";
   seriesId?: string | null;
   // Catatan: field nama pemesan TIDAK PERNAH dipakai/ditampilkan di halaman publik.
 };
@@ -310,7 +310,15 @@ export default function MeetingSchedule({
                         const live = nowMs >= startAbs && nowMs < endAbs;
                         const done = endAbs <= nowMs;
                         const cls = live ? "on" : done ? "done" : "pm";
+                        const statusText = live
+                          ? "Berlangsung"
+                          : done
+                            ? "Selesai"
+                            : "Dipesan";
                         const c = blockContent(b);
+                        const sub = [c.sub, statusText]
+                          .filter(Boolean)
+                          .join(" · ");
                         return (
                           <div
                             key={b.id}
@@ -319,10 +327,10 @@ export default function MeetingSchedule({
                               left: `${left}%`,
                               width: `calc(${width}% - 3px)`,
                             }}
-                            title={c.tip}
+                            title={`${c.tip} · ${statusText}`}
                           >
                             <b>{c.main}</b>
-                            {c.sub && <small>{c.sub}</small>}
+                            <small>{sub}</small>
                           </div>
                         );
                       })}

@@ -564,6 +564,23 @@ html {
   color: var(--mute);
   border-color: var(--line);
 }
+/* Hover: blok memanjang ke kanan agar info pada durasi pendek tak terpotong. */
+.lnd .ev {
+  transition: box-shadow 0.15s;
+}
+.lnd .ev:hover {
+  width: auto !important;
+  min-width: max-content;
+  overflow: visible;
+  z-index: 6;
+  box-shadow: 0 10px 26px rgba(30, 10, 25, 0.22);
+}
+.lnd .ev:hover b,
+.lnd .ev:hover small {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
 .lnd .em {
   position: absolute;
   inset: 0;
