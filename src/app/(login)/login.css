@@ -532,6 +532,31 @@
   outline-offset: 2px;
 }
 
+/* ---------- Desktop: satu layar, konten di tengah & sejajar ---------- */
+@media (min-width: 861px) {
+  /* Pas tinggi layar → tidak ada scroll di level halaman. */
+  .lgn {
+    height: 100vh;
+  }
+  /* Tiap kolom setinggi layar; scroll internal hanya bila konten terlalu
+     tinggi (mis. layar pendek), bukan scroll seluruh halaman. */
+  .lgn .hero,
+  .lgn .pn {
+    height: 100vh;
+    overflow-y: auto;
+  }
+  /* Konten hero di tengah vertikal (sejajar dengan formulir di kanan). */
+  .lgn .hero {
+    justify-content: center;
+  }
+  /* Logo tetap dipaku di kiri atas. */
+  .lgn .hero .lg {
+    position: absolute;
+    top: 40px;
+    left: 48px;
+  }
+}
+
 /* ---------- Responsif ---------- */
 @media (max-width: 860px) {
   .lgn {
