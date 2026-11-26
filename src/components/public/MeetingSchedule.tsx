@@ -301,8 +301,14 @@ export default function MeetingSchedule({
                         }
                         if (left + width > 100) width = 100 - left;
                         if (width < 0) width = 0;
-                        const live = isToday && nowMin >= s && nowMin < e;
-                        const done = isToday && e <= nowMin;
+                        // Klasifikasi berdasar waktu absolut (bukan hanya jam
+                        // hari ini) agar meeting yang sudah lewat di tanggal mana
+                        // pun — termasuk "auto check-in" (Dipesan tapi waktunya
+                        // sudah lewat) — tampil sebagai "Selesai" (redup).
+                        const startAbs = new Date(b.startAt).getTime();
+                        const endAbs = new Date(b.endAt).getTime();
+                        const live = nowMs >= startAbs && nowMs < endAbs;
+                        const done = endAbs <= nowMs;
                         const cls = live ? "on" : done ? "done" : "pm";
                         const c = blockContent(b);
                         return (
