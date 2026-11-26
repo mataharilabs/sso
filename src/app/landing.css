@@ -1,0 +1,698 @@
+/* Halaman depan publik SSO — gaya ter-scope di bawah .lnd. Token mengikuti
+   brief (brand #D6194B, tanpa biru/ungu kecuali aksen ikon Event). Dukung
+   dark mode (prefers-color-scheme) & prefers-reduced-motion. */
+
+/* Gulir halus untuk anchor "Lihat jadwal" (hanya di rute ini). */
+html {
+  scroll-behavior: smooth;
+}
+
+.lnd {
+  --bg: #fbfafb;
+  --card: #fff;
+  --ink: #1b1f2a;
+  --mute: #5f6475;
+  --line: #e6e2e6;
+  --soft: #f4f1f4;
+  --brand: #d6194b;
+  --brand-d: #b01239;
+  --brand-t: #fde8ee;
+  --ok: #16794c;
+  --ok-t: #e3f5ec;
+  --warn: #b45309;
+  --warn-t: #fef1dc;
+
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lnd {
+    --bg: #14151a;
+    --card: #1e2028;
+    --ink: #f2f1f4;
+    --mute: #a3a6b5;
+    --line: #32343f;
+    --soft: #272a33;
+    --brand: #f0486f;
+    --brand-d: #d6194b;
+    --brand-t: #3a1b26;
+    --ok: #4cc38a;
+    --ok-t: #17301f;
+    --warn: #f5a94b;
+    --warn-t: #33260f;
+  }
+}
+
+.lnd *,
+.lnd *::before,
+.lnd *::after {
+  box-sizing: border-box;
+}
+
+/* Latar blur merah muda (tanpa biru). */
+.lnd .bg {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 760px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.lnd .bg i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: lndfl 16s ease-in-out infinite;
+}
+.lnd .bg i:nth-child(1) {
+  width: 420px;
+  height: 420px;
+  background: var(--brand-t);
+  left: -120px;
+  top: -120px;
+}
+.lnd .bg i:nth-child(2) {
+  width: 360px;
+  height: 360px;
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  right: -100px;
+  top: 140px;
+  animation-delay: -7s;
+}
+@keyframes lndfl {
+  50% {
+    transform: translate(26px, 20px) scale(1.07);
+  }
+}
+
+.lnd .w {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Header ---------- */
+.lnd .hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+.lnd .lg {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+}
+.lnd .lg i {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--brand);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand) 35%, transparent);
+}
+.lnd .lg b {
+  display: block;
+  line-height: 1.2;
+  font-weight: 800;
+}
+.lnd .lg small {
+  color: var(--mute);
+  font-size: 12.5px;
+}
+
+/* ---------- Tombol ---------- */
+.lnd .btn {
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 13px;
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: 700 14.5px inherit;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+.lnd .btn:active {
+  transform: scale(0.97);
+}
+.lnd .btn.p {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--brand) 32%, transparent);
+}
+.lnd .btn.p:hover {
+  background: var(--brand-d);
+}
+.lnd .btn.g:hover {
+  background: var(--soft);
+}
+.lnd .btn.s {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13.5px;
+}
+
+/* ---------- Hero ---------- */
+.lnd .hero {
+  text-align: center;
+  padding: 36px 0 44px;
+}
+.lnd .bd {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brand);
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.lnd h1 {
+  font-size: clamp(32px, 5.2vw, 54px);
+  line-height: 1.1;
+  margin: 0 auto 16px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  max-width: 780px;
+}
+.lnd h1 em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--brand), #ff6b5b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lnd .lead {
+  color: var(--mute);
+  font-size: 17px;
+  max-width: 560px;
+  margin: 0 auto 26px;
+}
+.lnd .cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lnd .cta .btn {
+  height: 52px;
+  padding: 0 28px;
+  font-size: 15.5px;
+}
+.lnd .vp {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  color: var(--mute);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.lnd .vp span {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.lnd .vp svg {
+  color: var(--ok);
+}
+
+/* ---------- Seksi ---------- */
+.lnd .eb {
+  text-align: center;
+  color: var(--mute);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.lnd .sec {
+  padding: 30px 0;
+}
+.lnd .st {
+  text-align: center;
+  margin: 0 0 22px;
+}
+.lnd .st h2 {
+  font-size: 26px;
+  margin: 0 0 4px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.lnd .st p {
+  margin: 0;
+  color: var(--mute);
+}
+
+/* ---------- Kartu aplikasi ---------- */
+.lnd .gr {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.lnd .ap {
+  --a: var(--a-l, #d6194b);
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: 20px;
+  padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  box-shadow: 0 4px 16px rgba(30, 10, 25, 0.04);
+  cursor: pointer;
+  text-align: left;
+}
+@media (prefers-color-scheme: dark) {
+  .lnd .ap {
+    --a: var(--a-d, #d6194b);
+  }
+}
+.lnd .ap:hover {
+  transform: translateY(-4px);
+  border-color: var(--a);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--a) 18%, transparent);
+}
+.lnd .ap .ic {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--a);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+.lnd .ap h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.lnd .live {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ok);
+  background: var(--ok-t);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+.lnd .live::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  animation: lndpu 2s infinite;
+}
+.lnd .live.warn {
+  color: var(--warn);
+  background: var(--warn-t);
+}
+.lnd .live.warn::before {
+  background: var(--warn);
+  animation: none;
+}
+@keyframes lndpu {
+  50% {
+    opacity: 0.35;
+  }
+}
+.lnd .ap p {
+  margin: 0;
+  color: var(--mute);
+  font-size: 14px;
+}
+.lnd .dm {
+  font-size: 12.5px;
+  color: var(--mute);
+}
+.lnd .go {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--a);
+  font-weight: 700;
+  font-size: 14px;
+  padding-top: 4px;
+}
+.lnd .go svg {
+  transition: transform 0.15s;
+}
+.lnd .ap:hover .go svg {
+  transform: translateX(5px);
+}
+
+/* ---------- Kartu jadwal + timeline ---------- */
+.lnd .mc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 10px 34px rgba(30, 10, 25, 0.06);
+  padding: 18px;
+}
+.lnd .tb {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.lnd .ib {
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 18px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.lnd .ib:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.lnd .in {
+  height: 42px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  padding: 0 12px;
+  outline: none;
+}
+.lnd .in:focus {
+  border-color: var(--brand);
+}
+.lnd .dl {
+  font-weight: 700;
+}
+.lnd .lgd {
+  display: flex;
+  gap: 14px;
+  font-size: 12.5px;
+  color: var(--mute);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.lnd .lgd i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 5px;
+  vertical-align: -1px;
+}
+.lnd .tl {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.lnd .tg {
+  --lw: 200px;
+  min-width: 760px;
+  position: relative;
+}
+.lnd .rw {
+  display: grid;
+  grid-template-columns: var(--lw) 1fr;
+  border-top: 1px solid var(--line);
+  min-height: 76px;
+}
+.lnd .rw:first-child {
+  border-top: 0;
+  min-height: 40px;
+  background: var(--soft);
+}
+.lnd .lb {
+  padding: 12px 14px;
+  position: sticky;
+  left: 0;
+  background: var(--card);
+  z-index: 3;
+  border-right: 1px solid var(--line);
+}
+.lnd .rw:first-child .lb {
+  background: var(--soft);
+}
+.lnd .lb b {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14.5px;
+  flex-wrap: wrap;
+}
+.lnd .lb small {
+  display: block;
+  color: var(--mute);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+.lnd .pl {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 20px;
+}
+.lnd .pl.f {
+  background: var(--ok-t);
+  color: var(--ok);
+}
+.lnd .pl.u {
+  background: var(--brand-t);
+  color: var(--brand);
+}
+.lnd .tk {
+  position: relative;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(10% - 1px),
+    var(--line) calc(10% - 1px),
+    var(--line) 10%
+  );
+  cursor: pointer;
+}
+.lnd .hrs {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 10), 1fr);
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--mute);
+  font-weight: 700;
+}
+.lnd .hrs span {
+  padding-left: 6px;
+}
+.lnd .ev {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  border-radius: 11px;
+  padding: 6px 10px;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.3;
+  border-left: 4px solid;
+  cursor: default;
+}
+.lnd .ev b {
+  display: block;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lnd .ev small {
+  display: block;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lnd .ev.pm {
+  background: var(--warn-t);
+  color: var(--warn);
+  border-color: var(--warn);
+}
+.lnd .ev.on {
+  background: var(--ok-t);
+  color: var(--ok);
+  border-color: var(--ok);
+}
+/* Meeting yang sudah selesai (tetap ditampilkan, versi redup). */
+.lnd .ev.done {
+  background: var(--soft);
+  color: var(--mute);
+  border-color: var(--line);
+}
+.lnd .em {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--mute);
+  font-size: 13px;
+  pointer-events: none;
+}
+.lnd .nw {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--brand);
+  z-index: 2;
+  pointer-events: none;
+}
+.lnd .nw::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+.lnd .nt {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--mute);
+  font-size: 12.5px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.lnd .nt svg {
+  flex: none;
+}
+
+/* ---------- Pesan error kecil (jadwal gagal dimuat) ---------- */
+.lnd .err {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 40px 16px;
+  color: var(--mute);
+  font-size: 14px;
+}
+.lnd .load {
+  display: grid;
+  place-items: center;
+  padding: 48px 0;
+  color: var(--mute);
+}
+.lnd .spin {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--line);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: lndsp 0.7s linear infinite;
+}
+@keyframes lndsp {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Footer ---------- */
+.lnd .ft {
+  text-align: center;
+  color: var(--mute);
+  font-size: 13px;
+  padding: 36px 0 30px;
+}
+.lnd .ft b {
+  color: var(--ink);
+}
+
+/* ---------- Fokus terlihat ---------- */
+.lnd .btn:focus-visible,
+.lnd .ap:focus-visible,
+.lnd .ib:focus-visible,
+.lnd .in:focus-visible,
+.lnd .tk:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 700px) {
+  .lnd .w {
+    padding: 0 16px;
+  }
+  .lnd .hero {
+    padding-top: 20px;
+  }
+  .lnd .lead {
+    font-size: 15.5px;
+  }
+  .lnd .lgd {
+    margin-left: 0;
+  }
+  .lnd .tg {
+    --lw: 150px;
+  }
+  .lnd .tb .btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .lnd *,
+  .lnd *::before,
+  .lnd *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lnd .ap:hover {
+    transform: none;
+  }
+  .lnd .ap:hover .go svg {
+    transform: none;
+  }
+}

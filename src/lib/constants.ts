@@ -97,3 +97,27 @@ export const EMPLOYMENT_STATUS_LABELS: Record<string, string> = {
   INTERNSHIP: "Magang",
   FREELANCE: "Freelance",
 };
+
+// ---- Konfigurasi halaman depan publik (landing) ----
+
+// Seberapa detail jadwal meeting tampil di halaman PUBLIK (sebelum login).
+// Bisa diubah lewat env tanpa ubah kode. Nama pemesan TIDAK PERNAH ditampilkan.
+//   none     → hanya jam + status ruangan
+//   division → jam + divisi + status
+//   title    → jam + judul + divisi + status (default)
+export type PublicMeetingDetail = "none" | "division" | "title";
+
+export const PUBLIC_MEETING_DETAIL: PublicMeetingDetail = (() => {
+  const v = (process.env.PUBLIC_MEETING_DETAIL ?? "title").toLowerCase();
+  return v === "none" || v === "division" ? v : "title";
+})();
+
+// Jadwal ruang meeting boleh tampil publik? (false = hanya setelah login).
+export const PUBLIC_MEETING_ENABLED =
+  (process.env.PUBLIC_MEETING_ENABLED ?? "true").toLowerCase() !== "false";
+
+// Jam operasional ruang meeting (sumbu timeline), bisa diubah lewat env.
+export const MEETING_HOURS = {
+  start: Number(process.env.MEETING_HOUR_START ?? 8),
+  end: Number(process.env.MEETING_HOUR_END ?? 18),
+};
